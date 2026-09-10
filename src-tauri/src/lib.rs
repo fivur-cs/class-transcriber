@@ -21,6 +21,20 @@ fn transcribe_file(video_path: &str) -> Result<String, String> {
     if !video.exists() {
         return Err("The selected file does not exist.".to_string());
     }
+    let extension = video
+    .extension()
+    .and_then(|value| value.to_str())
+    .map(|value| value.to_ascii_lowercase())
+    .ok_or_else(|| "The selected file has no valid extension.".to_string())?;
+
+const ALLOWED_EXTENSIONS: &[&str] = &[
+    "mp4", "mov", "m4v", "mkv", "webm", "avi",
+    "mp3", "wav", "m4a", "aac", "flac", "ogg",
+];
+
+if !ALLOWED_EXTENSIONS.contains(&extension.as_str()) {
+    return Err("Unsupported audio or video format.".to_string());
+}
 
     let parent = video
         .parent()
@@ -219,10 +233,7 @@ fn find_model() -> Result<PathBuf, String> {
     if model.exists() {
         Ok(model)
     } else {
-        Err(format!(
-            "Whisper model not found at: {}",
-            model.display()
-        ))
+        Err("Whisper model was not found. Check the application requirements.".to_string())
     }
 }
 
