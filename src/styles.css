@@ -1,0 +1,653 @@
+:root {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #17211e;
+  background: #f7faf9;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --green: #00d896;
+  --green-hover: #00b981;
+  --green-soft: #e9fff7;
+
+  --text: #17211e;
+  --muted: #6c7773;
+
+  --surface: #ffffff;
+  --surface-soft: #f2f7f5;
+
+  --border: #d8e5e0;
+
+  --shadow:
+    0 16px 42px
+    rgba(23, 33, 30, 0.07);
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+html,
+body {
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+
+body {
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(0, 216, 150, 0.09),
+      transparent 34%
+    ),
+    #f7faf9;
+}
+
+
+button {
+  border: 0;
+  font: inherit;
+}
+
+
+.app-shell {
+  width:
+    min(
+      780px,
+      calc(100vw - 56px)
+    );
+
+  height: 100vh;
+
+  margin: 0 auto;
+
+  padding:
+    28px 0
+    18px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+.topbar {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-bottom: 22px;
+}
+
+.language-switch {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0px;
+}
+
+.brand-logo {
+  width: 280px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+
+.language-switch {
+  display: flex;
+
+  gap: 2px;
+
+  padding: 4px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    11px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.88
+    );
+}
+
+
+.language-button {
+  min-width: 42px;
+  height: 32px;
+
+  padding:
+    0 10px;
+
+  border-radius:
+    8px;
+
+  background:
+    transparent;
+
+  color:
+    var(--muted);
+
+  font-size:
+    13px;
+
+  font-weight:
+    700;
+
+  cursor:
+    pointer;
+}
+
+
+.language-button.active {
+  background:
+    var(--green);
+
+  color:
+    white;
+}
+
+
+.drop-zone {
+  flex: 1 1 auto;
+
+  min-height: 220px;
+
+  max-height: 300px;
+
+  padding:
+    28px;
+
+  display: flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  text-align:
+    center;
+
+  border:
+    2px dashed
+    var(--border);
+
+  border-radius:
+    22px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  box-shadow:
+    var(--shadow);
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+
+.drop-zone.dragging {
+  border-color:
+    var(--green);
+
+  background:
+    var(--green-soft);
+
+  transform:
+    translateY(-2px);
+}
+
+
+.upload-icon {
+  width: 62px;
+  height: 62px;
+
+  margin-bottom:
+    16px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    18px;
+
+  background:
+    var(--green-soft);
+}
+
+
+.upload-icon svg {
+  width: 28px;
+  height: 28px;
+
+  fill: none;
+
+  stroke:
+    var(--green-hover);
+
+  stroke-width:
+    1.8;
+
+  stroke-linecap:
+    round;
+
+  stroke-linejoin:
+    round;
+}
+
+
+.drop-zone h2 {
+  margin: 0;
+
+  font-size:
+    22px;
+
+  letter-spacing:
+    -0.02em;
+}
+
+
+.drop-zone p {
+  margin:
+    8px 0
+    20px;
+
+  color:
+    var(--muted);
+
+  font-size:
+    14px;
+}
+
+
+.primary-button,
+.secondary-button {
+  min-height:
+    42px;
+
+  padding:
+    0 18px;
+
+  border-radius:
+    11px;
+
+  font-weight:
+    700;
+
+  cursor:
+    pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+
+.primary-button {
+  background:
+    var(--green);
+
+  color:
+    white;
+}
+
+
+.primary-button:hover {
+  background:
+    var(--green-hover);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.secondary-button {
+  border:
+    1px solid
+    var(--border);
+
+  background:
+    var(--surface);
+
+  color:
+    var(--text);
+}
+
+
+.secondary-button:hover {
+  background:
+    var(--surface-soft);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.55;
+
+  cursor:
+    default;
+
+  transform:
+    none;
+}
+
+
+.file-panel {
+  flex: 0 0 auto;
+
+  margin-top:
+    16px;
+
+  padding:
+    14px 18px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap: 20px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    15px;
+
+  background:
+    var(--surface);
+}
+
+
+.file-details {
+  min-width: 0;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+}
+
+
+.file-check {
+  width: 34px;
+  height: 34px;
+
+  flex:
+    0 0 auto;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    10px;
+
+  background:
+    var(--green-soft);
+
+  color:
+    var(--green-hover);
+
+  font-weight:
+    800;
+}
+
+
+.file-copy {
+  min-width: 0;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    3px;
+}
+
+
+.file-copy strong {
+  overflow:
+    hidden;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+
+.file-copy span {
+  color:
+    var(--muted);
+
+  font-size:
+    13px;
+}
+
+
+.progress-card {
+  flex:
+    0 0 auto;
+
+  margin-top:
+    16px;
+
+  padding:
+    15px 18px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    15px;
+
+  background:
+    var(--surface);
+}
+
+
+.progress-header {
+  margin-bottom:
+    10px;
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  gap:
+    20px;
+
+  color:
+    var(--muted);
+
+  font-size:
+    13px;
+}
+
+
+.progress-track {
+  height:
+    9px;
+
+  overflow:
+    hidden;
+
+  border-radius:
+    999px;
+
+  background:
+    var(--surface-soft);
+}
+
+
+.progress-bar {
+  width:
+    0%;
+
+  height:
+    100%;
+
+  border-radius:
+    inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--green),
+      #38e8b3
+    );
+
+  transition:
+    width 0.25s ease;
+}
+
+
+.actions {
+  flex:
+    0 0 60px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    10px;
+}
+
+
+.footer {
+  flex:
+    0 0 auto;
+
+  padding-top:
+    4px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  color:
+    var(--muted);
+
+  font-size:
+    12px;
+}
+
+
+.github-link {
+  color:
+    var(--green-hover);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size:
+    15px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    -0.06em;
+
+  text-decoration:
+    none;
+}
+
+
+.github-link:hover {
+  color:
+    var(--green);
+}
+
+
+.hidden {
+  display:
+    none !important;
+}

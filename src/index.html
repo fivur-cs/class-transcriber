@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Class Transcriber</title>
+
+  <link
+    rel="stylesheet"
+    href="./styles.css"
+  />
+</head>
+
+<body>
+  <main class="app-shell">
+
+    <header class="topbar">
+
+      <div class="brand">
+<div class="brand">
+
+  <img
+    class="brand-logo"
+    src="./assets/logo.png"
+    alt="Class Transcriber"
+  />
+
+  <p id="subtitle">
+    Local audio and video transcription
+  </p>
+
+</div>
+
+      <div class="language-switch">
+        <button
+          class="language-button active"
+          data-lang="en"
+        >
+          EN
+        </button>
+
+        <button
+          class="language-button"
+          data-lang="es"
+        >
+          ES
+        </button>
+      </div>
+
+    </header>
+
+    <section
+      id="dropZone"
+      class="drop-zone"
+    >
+
+      <div class="upload-icon">
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M12 16V4"></path>
+          <path d="M7.5 8.5 12 4l4.5 4.5"></path>
+          <path d="M5 14v3.5A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5V14"></path>
+        </svg>
+      </div>
+
+      <h2 id="dropTitle">
+        Drop an audio or video file here
+      </h2>
+
+      <p id="dropDescription">
+        or choose a file from your computer
+      </p>
+
+      <button
+        id="selectButton"
+        class="primary-button"
+      >
+        Select file
+      </button>
+
+    </section>
+
+    <section
+      id="filePanel"
+      class="file-panel hidden"
+    >
+
+      <div class="file-details">
+
+        <div class="file-check">
+          ✓
+        </div>
+
+        <div class="file-copy">
+          <strong id="fileName">
+            media.mp4
+          </strong>
+
+          <span id="fileReady">
+            Ready to transcribe
+          </span>
+        </div>
+
+      </div>
+
+      <button
+        id="changeButton"
+        class="secondary-button"
+      >
+        Change
+      </button>
+
+    </section>
+
+    <section
+      id="progressSection"
+      class="progress-card hidden"
+    >
+
+      <div class="progress-header">
+        <span id="statusText">
+          Preparing...
+        </span>
+
+        <span id="progressValue">
+          0%
+        </span>
+      </div>
+
+      <div class="progress-track">
+        <div
+          id="progressBar"
+          class="progress-bar"
+        ></div>
+      </div>
+
+    </section>
+
+    <section class="actions">
+
+      <button
+        id="transcribeButton"
+        class="primary-button hidden"
+      >
+        Transcribe
+      </button>
+
+      <button
+        id="showButton"
+        class="secondary-button hidden"
+      >
+        Show in folder
+      </button>
+
+    </section>
+
+    <footer class="footer">
+
+      <span id="privacyText">
+        Your files stay on your device.
+      </span>
+
+   <a
+  class="github-link"
+  href="https://github.com/fivur-cs/class-transcriber"
+  target="_blank"
+  rel="noopener noreferrer"
+  title="Class Transcriber on GitHub"
+>
+  F_
+</a>
+
+    </footer>
+
+  </main>
+
+  <script
+    type="module"
+    src="./main.js"
+  ></script>
+</body>
+</html>
