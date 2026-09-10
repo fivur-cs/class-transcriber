@@ -1,10 +1,10 @@
 use std::{
     env,
-    fs,
     path::PathBuf,
     process::Command,
-    time::{SystemTime, UNIX_EPOCH},
 };
+
+use tempfile::tempdir;
 
 #[tauri::command(rename_all = "camelCase")]
 async fn transcribe(video_path: String) -> Result<String, String> {
@@ -49,14 +49,10 @@ if !ALLOWED_EXTENSIONS.contains(&extension.as_str()) {
     let whisper = find_whisper()?;
     let model = find_model()?;
 
-    let timestamp = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map_err(|error| error.to_string())?
-        .as_nanos();
+ let temp_dir = tempdir()
+    .map_err(|_| "Could not create a temporary directory.".to_string())?;
 
-    let temporary_audio = env::temp_dir().join(format!(
-        "class-transcriber-{timestamp}.wav"
-    ));
+let temporary_audio = temp_dir.path().join("audio.wav");
 
     let output_base = parent.join(format!("{stem}_Transcription"));
     let output_txt = parent.join(format!("{stem}_Transcription.txt"));
@@ -76,8 +72,7 @@ if !ALLOWED_EXTENSIONS.contains(&extension.as_str()) {
         })?;
 
     if !ffmpeg_output.status.success() {
-        let _ = fs::remove_file(&temporary_audio);
-
+     
         return Err(format_process_error(
             "FFmpeg failed",
             &ffmpeg_output.stderr,
@@ -96,12 +91,10 @@ if !ALLOWED_EXTENSIONS.contains(&extension.as_str()) {
         .arg(&output_base)
         .output()
         .map_err(|error| {
-            let _ = fs::remove_file(&temporary_audio);
-
+         
             format!("Could not start whisper.cpp: {error}")
         })?;
 
-    let _ = fs::remove_file(&temporary_audio);
 
     if !whisper_output.status.success() {
         return Err(format_process_error(
