@@ -1,18 +1,12 @@
-use std::{
-    env,
-    path::PathBuf,
-    process::Command,
-};
+use std::{env, path::PathBuf, process::Command};
 
 use tempfile::tempdir;
 
 #[tauri::command(rename_all = "camelCase")]
 async fn transcribe(video_path: String) -> Result<String, String> {
-    tauri::async_runtime::spawn_blocking(move || {
-        transcribe_file(&video_path)
-    })
-    .await
-    .map_err(|error| error.to_string())?
+    tauri::async_runtime::spawn_blocking(move || transcribe_file(&video_path))
+        .await
+        .map_err(|error| error.to_string())?
 }
 
 fn transcribe_file(video_path: &str) -> Result<String, String> {
@@ -22,19 +16,18 @@ fn transcribe_file(video_path: &str) -> Result<String, String> {
         return Err("The selected file does not exist.".to_string());
     }
     let extension = video
-    .extension()
-    .and_then(|value| value.to_str())
-    .map(|value| value.to_ascii_lowercase())
-    .ok_or_else(|| "The selected file has no valid extension.".to_string())?;
+        .extension()
+        .and_then(|value| value.to_str())
+        .map(|value| value.to_ascii_lowercase())
+        .ok_or_else(|| "The selected file has no valid extension.".to_string())?;
 
-const ALLOWED_EXTENSIONS: &[&str] = &[
-    "mp4", "mov", "m4v", "mkv", "webm", "avi",
-    "mp3", "wav", "m4a", "aac", "flac", "ogg",
-];
+    const ALLOWED_EXTENSIONS: &[&str] = &[
+        "mp4", "mov", "m4v", "mkv", "webm", "avi", "mp3", "wav", "m4a", "aac", "flac", "ogg",
+    ];
 
-if !ALLOWED_EXTENSIONS.contains(&extension.as_str()) {
-    return Err("Unsupported audio or video format.".to_string());
-}
+    if !ALLOWED_EXTENSIONS.contains(&extension.as_str()) {
+        return Err("Unsupported audio or video format.".to_string());
+    }
 
     let parent = video
         .parent()
@@ -49,13 +42,12 @@ if !ALLOWED_EXTENSIONS.contains(&extension.as_str()) {
     let whisper = find_whisper()?;
     let model = find_model()?;
 
- let temp_dir = tempdir()
-    .map_err(|_| "Could not create a temporary directory.".to_string())?;
+    let temp_dir = tempdir().map_err(|_| "Could not create a temporary directory.".to_string())?;
 
-let temporary_audio = temp_dir.path().join("audio.wav");
+    let temporary_audio = temp_dir.path().join("audio.wav");
 
-    let output_base = parent.join(format!("{stem}_Transcription"));
-    let output_txt = parent.join(format!("{stem}_Transcription.txt"));
+    let output_txt = available_output_path(parent, stem);
+    let output_base = output_txt.with_extension("");
 
     let ffmpeg_output = Command::new(&ffmpeg)
         .arg("-y")
@@ -67,16 +59,10 @@ let temporary_audio = temp_dir.path().join("audio.wav");
         .arg("1")
         .arg(&temporary_audio)
         .output()
-        .map_err(|error| {
-            format!("Could not start FFmpeg: {error}")
-        })?;
+        .map_err(|error| format!("Could not start FFmpeg: {error}"))?;
 
     if !ffmpeg_output.status.success() {
-     
-        return Err(format_process_error(
-            "FFmpeg failed",
-            &ffmpeg_output.stderr,
-        ));
+        return Err(format_process_error("FFmpeg failed", &ffmpeg_output.stderr));
     }
 
     let whisper_output = Command::new(&whisper)
@@ -90,11 +76,7 @@ let temporary_audio = temp_dir.path().join("audio.wav");
         .arg("-of")
         .arg(&output_base)
         .output()
-        .map_err(|error| {
-         
-            format!("Could not start whisper.cpp: {error}")
-        })?;
-
+        .map_err(|error| format!("Could not start whisper.cpp: {error}"))?;
 
     if !whisper_output.status.success() {
         return Err(format_process_error(
@@ -104,10 +86,7 @@ let temporary_audio = temp_dir.path().join("audio.wav");
     }
 
     if !output_txt.exists() {
-        return Err(
-            "Whisper finished, but the transcript file was not created."
-                .to_string(),
-        );
+        return Err("Whisper finished, but the transcript file was not created.".to_string());
     }
 
     Ok(output_txt.to_string_lossy().into_owned())
@@ -153,13 +132,28 @@ fn show_in_folder(path: String) -> Result<(), String> {
     Ok(())
 }
 
+fn available_output_path(parent: &std::path::Path, stem: &str) -> PathBuf {
+    let first = parent.join(format!("{stem}_Transcription.txt"));
+
+    if !first.exists() {
+        return first;
+    }
+
+    for number in 2.. {
+        let candidate = parent.join(format!("{stem}_Transcription_{number}.txt"));
+
+        if !candidate.exists() {
+            return candidate;
+        }
+    }
+
+    unreachable!()
+}
+
 fn find_ffmpeg() -> Result<PathBuf, String> {
     find_executable(
         "ffmpeg",
-        &[
-            "/opt/homebrew/bin/ffmpeg",
-            "/usr/local/bin/ffmpeg",
-        ],
+        &["/opt/homebrew/bin/ffmpeg", "/usr/local/bin/ffmpeg"],
     )
     .ok_or_else(|| {
         "FFmpeg was not found. This development build currently requires FFmpeg to be installed."
@@ -181,10 +175,7 @@ fn find_whisper() -> Result<PathBuf, String> {
     })
 }
 
-fn find_executable(
-    command: &str,
-    known_paths: &[&str],
-) -> Option<PathBuf> {
+fn find_executable(command: &str, known_paths: &[&str]) -> Option<PathBuf> {
     for path in known_paths {
         let candidate = PathBuf::from(path);
 
@@ -216,12 +207,10 @@ fn find_executable(
 }
 
 fn find_model() -> Result<PathBuf, String> {
-    let home = home_directory()
-        .ok_or_else(|| "Could not determine the home directory.".to_string())?;
+    let home =
+        home_directory().ok_or_else(|| "Could not determine the home directory.".to_string())?;
 
-    let model = home
-        .join("whisper-models")
-        .join("ggml-medium.bin");
+    let model = home.join("whisper-models").join("ggml-medium.bin");
 
     if model.exists() {
         Ok(model)
@@ -242,10 +231,7 @@ fn home_directory() -> Option<PathBuf> {
     }
 }
 
-fn format_process_error(
-    title: &str,
-    stderr: &[u8],
-) -> String {
+fn format_process_error(title: &str, stderr: &[u8]) -> String {
     let message = String::from_utf8_lossy(stderr);
     let message = message.trim();
 
@@ -260,10 +246,7 @@ fn format_process_error(
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![
-            transcribe,
-            show_in_folder
-        ])
+        .invoke_handler(tauri::generate_handler![transcribe, show_in_folder])
         .run(tauri::generate_context!())
         .expect("error while running Tauri application");
 }
