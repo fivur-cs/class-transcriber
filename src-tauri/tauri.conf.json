@@ -15,27 +15,25 @@
       {
         "label": "main",
         "title": "Class Transcriber",
-
         "width": 850,
         "height": 700,
-
         "minWidth": 720,
         "minHeight": 700,
-
         "resizable": true,
         "center": true
       }
     ],
 
     "security": {
-  "csp": {
-    "default-src": "'self'",
-    "connect-src": "ipc: http://ipc.localhost",
-    "img-src": "'self' asset: data:",
-    "style-src": "'self' 'unsafe-inline'",
-    "script-src": "'self'"
-  }
-}
+      "csp": {
+        "default-src": "'self'",
+        "connect-src": "ipc: http://ipc.localhost",
+        "img-src": "'self' asset: data:",
+        "style-src": "'self' 'unsafe-inline'",
+        "script-src": "'self'"
+      }
+    }
+  },
 
   "bundle": {
     "active": true,
